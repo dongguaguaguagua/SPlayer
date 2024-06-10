@@ -1,22 +1,21 @@
 import { resolve } from "path";
-import {
-  defineConfig,
-  externalizeDepsPlugin,
-  loadEnv,
-  splitVendorChunkPlugin,
-} from "electron-vite";
+import { defineConfig, externalizeDepsPlugin, loadEnv } from "electron-vite";
 import { NaiveUiResolver } from "unplugin-vue-components/resolvers";
 import { VitePWA } from "vite-plugin-pwa";
 import vue from "@vitejs/plugin-vue";
 import AutoImport from "unplugin-auto-import/vite";
 import Components from "unplugin-vue-components/vite";
 import viteCompression from "vite-plugin-compression";
+import checkPort from "./electron/main/utils/checkPort";
 
-export default defineConfig(({ mode }) => {
+export default defineConfig(async ({ mode }) => {
   // 读取环境变量
   const getEnv = (name) => {
     return loadEnv(mode, process.cwd())[name];
   };
+  // 获取端口
+  const devPort = await checkPort(getEnv("MAIN_VITE_DEV_PORT"));
+  const serverPort = await checkPort(getEnv("MAIN_VITE_SERVER_PORT"));
   // 返回配置
   return {
     // 主进程
@@ -70,8 +69,6 @@ export default defineConfig(({ mode }) => {
         }),
         // viteCompression
         viteCompression(),
-        // splitVendorChunkPlugin
-        splitVendorChunkPlugin(),
         // PWA
         VitePWA({
           registerType: "autoUpdate",
@@ -106,22 +103,22 @@ export default defineConfig(({ mode }) => {
             background_color: "#efefef",
             icons: [
               {
-                src: "/images/icons/favicon-32x32.png",
+                src: "/imgs/icons/favicon-32x32.png",
                 sizes: "32x32",
                 type: "image/png",
               },
               {
-                src: "/images/icons/favicon-96x96.png",
+                src: "/imgs/icons/favicon-96x96.png",
                 sizes: "96x96",
                 type: "image/png",
               },
               {
-                src: "/images/icons/favicon-256x256.png",
+                src: "/imgs/icons/favicon-256x256.png",
                 sizes: "256x256",
                 type: "image/png",
               },
               {
-                src: "/images/icons/favicon-512x512.png",
+                src: "/imgs/icons/favicon-512x512.png",
                 sizes: "512x512",
                 type: "image/png",
               },
@@ -131,11 +128,11 @@ export default defineConfig(({ mode }) => {
       ],
       // 服务器配置
       server: {
-        port: getEnv("MAIN_VITE_DEV_PORT"),
+        port: devPort,
         // 代理
         proxy: {
           "/api": {
-            target: `http://${getEnv("MAIN_VITE_SERVER_HOST")}:${getEnv("MAIN_VITE_SERVER_PORT")}`,
+            target: `http://${getEnv("MAIN_VITE_SERVER_HOST")}:${serverPort}`,
             changeOrigin: true,
             rewrite: (path) => path.replace(/^\/api/, ""),
           },

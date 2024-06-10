@@ -56,7 +56,7 @@
             >
               <template #placeholder>
                 <div class="cover-loading">
-                  <img class="loading-img" src="/images/pic/song.jpg?assest" alt="loading-img" />
+                  <img class="loading-img" src="/imgs/pic/song.jpg?assest" alt="loading-img" />
                 </div>
               </template>
             </n-image>
@@ -94,7 +94,7 @@
             </n-icon>
             <!-- 更多操作 -->
             <n-dropdown
-              v-if="playMode !== 'dj' && !music.getPlaySongData?.path"
+              v-if="!music.getPlaySongData?.path"
               :options="songMoreOptions"
               :show-arrow="true"
               placement="top-start"
@@ -415,6 +415,7 @@ const songMoreOptions = computed(() => [
   {
     key: "add-pl",
     label: "添加到歌单",
+    show: playMode.value !== "dj",
     props: {
       onClick: () => {
         addPlaylistRef.value?.openAddToPlaylist(music.getPlaySongData?.id);
@@ -431,6 +432,7 @@ const songMoreOptions = computed(() => [
           path: "/comment",
           query: {
             id: music.getPlaySongData?.id,
+            type: playMode.value,
           },
         });
       },
@@ -440,7 +442,9 @@ const songMoreOptions = computed(() => [
   {
     key: "mv",
     label: "观看 MV",
-    show: music.getPlaySongData?.mv && music.getPlaySongData?.mv !== 0 ? true : false,
+    show:
+      playMode.value !== "dj" &&
+      (music.getPlaySongData?.mv && music.getPlaySongData?.mv !== 0 ? true : false),
     props: {
       onClick: () => {
         router.push({
@@ -456,7 +460,7 @@ const songMoreOptions = computed(() => [
   {
     key: "download",
     label: "下载歌曲",
-    show: music.getPlaySongData?.path ? false : true,
+    show: playMode.value !== "dj" && (music.getPlaySongData?.path ? false : true),
     props: {
       onClick: () => {
         downloadSongRef.value?.openDownloadModal(music.getPlaySongData);
@@ -487,10 +491,10 @@ const songTimeSliderUpdate = (val) => {
 
 // 开启播放器
 const openFullPlayer = () => {
-  if (playMode.value === "dj") {
-    $message.warning("当前为电台模式，无法开启播放器");
-    return false;
-  }
+  // if (playMode.value === "dj") {
+  //   $message.warning("当前为电台模式，无法开启播放器");
+  //   return false;
+  // }
   if (showSpectrums.value && typeof $player !== "undefined") processSpectrum($player);
   showFullPlayer.value = true;
 };
@@ -666,7 +670,7 @@ watch(
             justify-content: center;
             border-radius: 50%;
             animation: playerCoverRotate 18s linear infinite;
-            background: no-repeat url("/images/pic/record.png?assest") center;
+            background: no-repeat url("/imgs/pic/record.png?assest") center;
             :deep(img) {
               width: 40px;
               height: 40px;

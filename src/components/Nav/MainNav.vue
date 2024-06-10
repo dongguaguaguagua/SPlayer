@@ -3,7 +3,7 @@
   <nav :class="{ 'main-nav': true, 'no-sider': !showSider }">
     <div class="left">
       <div :class="['logo', asideMenuCollapsed ? 'collapsed' : null]" @click="router.push('/')">
-        <!-- <n-avatar class="logo-img" src="/images/icons/favicon.png?asset" /> -->
+        <!-- <n-avatar class="logo-img" src="/imgs/icons/favicon.png?asset" /> -->
         <n-icon class="logo-img" size="30">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -93,7 +93,7 @@
       <!-- 用户信息 -->
       <userData />
       <!-- TitleBar -->
-      <TitleBar v-if="isElectron" />
+      <TitleBar v-if="checkPlatform.electron()" />
     </div>
   </nav>
 </template>
@@ -121,11 +121,6 @@ const openGithub = () => {
   console.log(packageJson.github);
   window.open(packageJson.github);
 };
-
-// 是否为 Electron
-const isElectron = computed(() => {
-  return checkPlatform.electron() || typeof electron !== "undefined";
-});
 
 // 主菜单渲染
 const mainMenuShow = ref(false);

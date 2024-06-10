@@ -8,7 +8,12 @@ let lastDownloadBlobUrl = null;
  */
 export const checkPlatform = {
   electron: () => {
-    return typeof electron !== "undefined";
+    // return typeof electron !== "undefined";
+    if (typeof process !== "undefined" && process.versions) {
+      return process.versions.electron ? true : false;
+    }
+    const userAgent = navigator.userAgent.toLowerCase();
+    return userAgent.includes("electron");
   },
   macOS: () => {
     if (!checkPlatform.electron()) return false;
@@ -22,6 +27,16 @@ export const checkPlatform = {
     if (!checkPlatform.electron()) return false;
     return electron.process.platform === "linux";
   },
+};
+
+/**
+ * 引入 CSS
+ */
+export const loadCSS = (href) => {
+  const linkElement = document.createElement("link");
+  linkElement.rel = "stylesheet";
+  linkElement.href = href;
+  document.head.appendChild(linkElement);
 };
 
 /**
@@ -75,7 +90,7 @@ export const getLocalCoverData = async (path, isAlbum = false) => {
       return lastCoverBlobUrl;
     } else {
       // 如果没有封面数据
-      return `/images/pic/${isAlbum ? "album" : "song"}.jpg?assest`;
+      return `/imgs/pic/${isAlbum ? "album" : "song"}.jpg?assest`;
     }
   } catch (error) {
     console.error("获取本地音乐封面出错：", error);

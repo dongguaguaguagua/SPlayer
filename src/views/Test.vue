@@ -1,9 +1,18 @@
 <template>
   <div class="test">
-    <n-h1>测试页面</n-h1>
+    <n-h1>Test Page</n-h1>
     <n-card title="频谱数据" style="margin-bottom: 20px">
       <n-scrollbar style="max-height: 120px">
         {{ status.spectrumsData }}
+      </n-scrollbar>
+      <n-scrollbar style="max-height: 120px">
+        {{ status.spectrumsScaleData }}
+        <div
+          :style="{
+            transform: `scale(${status.spectrumsScaleData})`,
+          }"
+          class="point"
+        ></div>
       </n-scrollbar>
     </n-card>
     <n-card title="频谱图">
@@ -59,10 +68,6 @@ const roundRect = (ctx, x, y, width, height, radius) => {
   ctx.fill();
 };
 
-// watch(
-//   () => status.spectrumsData,
-//   (val) => drawSpectrum(val),
-// );
 onMounted(() => {
   drawSpectrum(status.spectrumsData);
 });
@@ -88,5 +93,12 @@ onMounted(() => {
     hsla(0, 0%, 100%, 0.6) 85%,
     hsla(0, 0%, 100%, 0)
   );
+}
+.point {
+  width: 30px;
+  height: 30px;
+  margin: 20px;
+  border-radius: 50%;
+  background-color: var(--main-color);
 }
 </style>

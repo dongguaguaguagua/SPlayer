@@ -19,7 +19,7 @@
           >
             <template #placeholder>
               <div class="cover-loading">
-                <img class="loading-img" src="/images/pic/song.jpg?assest" alt="song" />
+                <img class="loading-img" src="/imgs/pic/song.jpg?assest" alt="song" />
               </div>
             </template>
           </n-image>
@@ -34,7 +34,7 @@
           <div class="creator">
             <n-avatar
               :src="(djDetail.creator?.avatarUrl + '?param=300y$300').replace(/^http:/, 'https:')"
-              fallback-src="/images/pic/avatar.jpg?assest"
+              fallback-src="/imgs/pic/avatar.png?assest"
               round
             />
             <n-text class="nickname">{{ djDetail.creator?.nickname || "未知创建者" }}</n-text>
@@ -170,9 +170,9 @@
       <div v-if="djData !== 'empty'" class="list">
         <Transition name="fade" mode="out-in">
           <div v-if="!searchValue" class="song-list">
-            <SongList :data="djData" type="dj" />
+            <SongList :data="djData" :sourceId="djId" type="dj" />
           </div>
-          <SongList v-else-if="searchData?.length" :data="searchData" type="dj" />
+          <SongList v-else-if="searchData?.length" :data="searchData" :sourceId="djId" type="dj" />
           <n-empty
             v-else
             :description="`搜不到关于 ${searchValue} 的任何节目`"
